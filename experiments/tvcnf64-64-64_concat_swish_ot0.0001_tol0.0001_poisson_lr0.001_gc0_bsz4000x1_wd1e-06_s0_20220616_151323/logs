@@ -1,0 +1,48 @@
+2022-06-16 15:13:28,900 - Namespace(actfn='swish', data='earthquakes_jp', experiment_dir='experiments', experiment_id='20220616_151323', gradclip=10000000000.0, hdims='64-64-64', l2_attn=False, layer_type='concat', logfreq=10, lr=0.001, max_events=4000, model='tvcnf', momentum=0.9, naive_hutch=False, ngpus=1, num_iterations=10000, otreg_strength=0.0001, port=17934, resume=None, seed=0, share_hidden=True, solve_reverse=False, test_bsz=32, testfreq=100, tol=0.0001, tpp='poisson', tpp_actfn='softplus', tpp_cond=True, tpp_hdims='32-32', tpp_otreg_strength=0.0001, tpp_style='gru', warmup_itrs=0, weight_decay=1e-06)
+2022-06-16 15:13:28,901 - Saving to experiments/tvcnf64-64-64_concat_swish_ot0.0001_tol0.0001_poisson_lr0.001_gc0_bsz4000x1_wd1e-06_s0_20220616_151323
+2022-06-16 15:13:28,906 - Found 4 CUDA devices.
+2022-06-16 15:13:28,911 - GeForce RTX 2080 Ti 	 Memory: 10.76GB
+2022-06-16 15:13:28,911 - GeForce RTX 2080 Ti 	 Memory: 10.76GB
+2022-06-16 15:13:28,912 - GeForce RTX 2080 Ti 	 Memory: 10.76GB
+2022-06-16 15:13:28,912 - GeForce RTX 2080 Ti 	 Memory: 10.76GB
+2022-06-16 15:13:30,924 - Traceback (most recent call last):
+  File "/home/cvmlserver/yujees/neural_stpp/train_stpp-eqjp_tvcnf.py", line 166, in main
+    _main(rank, world_size, args, savepath, logger)
+  File "/home/cvmlserver/yujees/neural_stpp/train_stpp-eqjp_tvcnf.py", line 206, in _main
+    train_set = load_data(args.data, split="train")
+  File "/home/cvmlserver/yujees/neural_stpp/viz_dataset.py", line 162, in load_data
+    return datasets.Earthquakes(split=split)
+  File "/home/cvmlserver/yujees/neural_stpp/datasets.py", line 108, in __init__
+    dataset = np.load("data/earthquakes/earthquakes_jp.npz")
+  File "/home/cvmlserver/anaconda3/envs/nstpp/lib/python3.8/site-packages/numpy/lib/npyio.py", line 407, in load
+    fid = stack.enter_context(open(os_fspath(file), "rb"))
+FileNotFoundError: [Errno 2] No such file or directory: 'data/earthquakes/earthquakes_jp.npz'
+
+2022-06-16 15:13:32,164 - Traceback (most recent call last):
+  File "/home/cvmlserver/yujees/neural_stpp/train_stpp-eqjp_tvcnf.py", line 652, in <module>
+    mp.spawn(main, args=(args.ngpus, args, savepath), nprocs=args.ngpus, join=True)
+  File "/home/cvmlserver/anaconda3/envs/nstpp/lib/python3.8/site-packages/torch/multiprocessing/spawn.py", line 240, in spawn
+    return start_processes(fn, args, nprocs, join, daemon, start_method='spawn')
+  File "/home/cvmlserver/anaconda3/envs/nstpp/lib/python3.8/site-packages/torch/multiprocessing/spawn.py", line 198, in start_processes
+    while not context.join():
+  File "/home/cvmlserver/anaconda3/envs/nstpp/lib/python3.8/site-packages/torch/multiprocessing/spawn.py", line 160, in join
+    raise ProcessRaisedException(msg, error_index, failed_process.pid)
+torch.multiprocessing.spawn.ProcessRaisedException: 
+
+-- Process 0 terminated with the following error:
+Traceback (most recent call last):
+  File "/home/cvmlserver/anaconda3/envs/nstpp/lib/python3.8/site-packages/torch/multiprocessing/spawn.py", line 69, in _wrap
+    fn(i, *args)
+  File "/home/cvmlserver/yujees/neural_stpp/train_stpp-eqjp_tvcnf.py", line 166, in main
+    _main(rank, world_size, args, savepath, logger)
+  File "/home/cvmlserver/yujees/neural_stpp/train_stpp-eqjp_tvcnf.py", line 206, in _main
+    train_set = load_data(args.data, split="train")
+  File "/home/cvmlserver/yujees/neural_stpp/viz_dataset.py", line 162, in load_data
+    return datasets.Earthquakes(split=split)
+  File "/home/cvmlserver/yujees/neural_stpp/datasets.py", line 108, in __init__
+    dataset = np.load("data/earthquakes/earthquakes_jp.npz")
+  File "/home/cvmlserver/anaconda3/envs/nstpp/lib/python3.8/site-packages/numpy/lib/npyio.py", line 407, in load
+    fid = stack.enter_context(open(os_fspath(file), "rb"))
+FileNotFoundError: [Errno 2] No such file or directory: 'data/earthquakes/earthquakes_jp.npz'
+
+

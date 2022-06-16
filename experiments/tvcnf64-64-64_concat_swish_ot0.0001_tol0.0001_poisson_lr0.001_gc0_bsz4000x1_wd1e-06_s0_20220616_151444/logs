@@ -1,0 +1,78 @@
+2022-06-16 15:14:49,396 - Namespace(actfn='swish', data='earthquakes_jp', experiment_dir='experiments', experiment_id='20220616_151444', gradclip=10000000000.0, hdims='64-64-64', l2_attn=False, layer_type='concat', logfreq=10, lr=0.001, max_events=4000, model='tvcnf', momentum=0.9, naive_hutch=False, ngpus=1, num_iterations=10000, otreg_strength=0.0001, port=18342, resume=None, seed=0, share_hidden=True, solve_reverse=False, test_bsz=32, testfreq=100, tol=0.0001, tpp='poisson', tpp_actfn='softplus', tpp_cond=True, tpp_hdims='32-32', tpp_otreg_strength=0.0001, tpp_style='gru', warmup_itrs=0, weight_decay=1e-06)
+2022-06-16 15:14:49,397 - Saving to experiments/tvcnf64-64-64_concat_swish_ot0.0001_tol0.0001_poisson_lr0.001_gc0_bsz4000x1_wd1e-06_s0_20220616_151444
+2022-06-16 15:14:49,400 - Found 4 CUDA devices.
+2022-06-16 15:14:49,404 - GeForce RTX 2080 Ti 	 Memory: 10.76GB
+2022-06-16 15:14:49,404 - GeForce RTX 2080 Ti 	 Memory: 10.76GB
+2022-06-16 15:14:49,404 - GeForce RTX 2080 Ti 	 Memory: 10.76GB
+2022-06-16 15:14:49,404 - GeForce RTX 2080 Ti 	 Memory: 10.76GB
+2022-06-16 15:14:53,759 - 950 training examples, 50 val examples, 50 test examples
+2022-06-16 15:14:53,893 - DistributedDataParallel(
+  (module): CombinedSpatiotemporalModel(
+    (spatial_model): IndependentCNF(
+      squash_time=False
+      (cnf): TimeVariableCNF(
+        method=dopri5, tol=0.0001, energy=0.0001, jacnorm=0.0001
+        (func): SequentialDiffEq(
+          (layers): ModuleList(
+            (0): ConcatLinear_v2(
+              (_layer): Linear(in_features=2, out_features=64, bias=True)
+              (_hyper_bias): Linear(in_features=1, out_features=64, bias=False)
+            )
+            (1): TimeDependentSwish(
+              (beta): Sequential(
+                (0): Linear(in_features=1, out_features=64, bias=True)
+                (1): Softplus(beta=1, threshold=20)
+                (2): Linear(in_features=64, out_features=64, bias=True)
+                (3): Softplus(beta=1, threshold=20)
+              )
+            )
+            (2): ConcatLinear_v2(
+              (_layer): Linear(in_features=64, out_features=64, bias=True)
+              (_hyper_bias): Linear(in_features=1, out_features=64, bias=False)
+            )
+            (3): TimeDependentSwish(
+              (beta): Sequential(
+                (0): Linear(in_features=1, out_features=64, bias=True)
+                (1): Softplus(beta=1, threshold=20)
+                (2): Linear(in_features=64, out_features=64, bias=True)
+                (3): Softplus(beta=1, threshold=20)
+              )
+            )
+            (4): ConcatLinear_v2(
+              (_layer): Linear(in_features=64, out_features=64, bias=True)
+              (_hyper_bias): Linear(in_features=1, out_features=64, bias=False)
+            )
+            (5): TimeDependentSwish(
+              (beta): Sequential(
+                (0): Linear(in_features=1, out_features=64, bias=True)
+                (1): Softplus(beta=1, threshold=20)
+                (2): Linear(in_features=64, out_features=64, bias=True)
+                (3): Softplus(beta=1, threshold=20)
+              )
+            )
+            (6): ConcatLinear_v2(
+              (_layer): Linear(in_features=64, out_features=2, bias=True)
+              (_hyper_bias): Linear(in_features=1, out_features=2, bias=False)
+            )
+          )
+        )
+      )
+    )
+    (temporal_model): HomogeneousPoissonPointProcess()
+  )
+)
+2022-06-16 15:14:54,799 - Iter 0 | Epoch 0 | LR 0.00100 | Time 0.9 | Temporal -1.9238(-1.9238) | Spatial -3.0494(-3.0494) | GradNorm 23.05(23.05) | NFE 70 | Mem 3247.48 MB
+2022-06-16 15:14:55,215 - [Test] Iter 0 | Val Temporal -1.8448 | Val Spatial -2.9076 | Test Temporal -1.8406 | Test Spatial -2.7982
+2022-06-16 15:14:58,114 - Iter 10 | Epoch 0 | LR 0.00100 | Time 2.9 | Temporal -1.8379(-1.9087) | Spatial -2.7103(-2.9938) | GradNorm 35.97(25.25) | NFE 52 | Mem 3247.48 MB
+2022-06-16 15:15:01,708 - Iter 20 | Epoch 0 | LR 0.00100 | Time 3.6 | Temporal -1.7806(-1.8941) | Spatial -1.9503(-2.8915) | GradNorm 70.17(28.46) | NFE 64 | Mem 3247.48 MB
+2022-06-16 15:15:02,837 - Traceback (most recent call last):
+  File "/home/cvmlserver/yujees/neural_stpp/train_stpp-eqjp_tvcnf.py", line 166, in main
+    _main(rank, world_size, args, savepath, logger)
+  File "/home/cvmlserver/yujees/neural_stpp/train_stpp-eqjp_tvcnf.py", line 443, in _main
+    loss.backward()
+  File "/home/cvmlserver/anaconda3/envs/nstpp/lib/python3.8/site-packages/torch/_tensor.py", line 363, in backward
+    torch.autograd.backward(self, gradient, retain_graph, create_graph, inputs=inputs)
+  File "/home/cvmlserver/anaconda3/envs/nstpp/lib/python3.8/site-packages/torch/autograd/__init__.py", line 173, in backward
+    Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+KeyboardInterrupt
+

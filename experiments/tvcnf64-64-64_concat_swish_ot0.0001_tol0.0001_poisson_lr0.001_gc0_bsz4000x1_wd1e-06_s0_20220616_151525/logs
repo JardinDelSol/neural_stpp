@@ -1,0 +1,72 @@
+2022-06-16 15:16:20,309 - Namespace(actfn='swish', data='earthquakes_jp', experiment_dir='experiments', experiment_id='20220616_151525', gradclip=10000000000.0, hdims='64-64-64', l2_attn=False, layer_type='concat', logfreq=10, lr=0.001, max_events=4000, model='tvcnf', momentum=0.9, naive_hutch=False, ngpus=1, num_iterations=10000, otreg_strength=0.0001, port=10409, resume=None, seed=0, share_hidden=True, solve_reverse=False, test_bsz=32, testfreq=100, tol=0.0001, tpp='poisson', tpp_actfn='softplus', tpp_cond=True, tpp_hdims='32-32', tpp_otreg_strength=0.0001, tpp_style='gru', warmup_itrs=0, weight_decay=1e-06)
+2022-06-16 15:16:23,964 - Saving to experiments/tvcnf64-64-64_concat_swish_ot0.0001_tol0.0001_poisson_lr0.001_gc0_bsz4000x1_wd1e-06_s0_20220616_151525
+2022-06-16 15:16:29,819 - Found 4 CUDA devices.
+2022-06-16 15:16:38,764 - GeForce RTX 2080 Ti 	 Memory: 10.76GB
+2022-06-16 15:16:40,481 - GeForce RTX 2080 Ti 	 Memory: 10.76GB
+2022-06-16 15:16:41,995 - GeForce RTX 2080 Ti 	 Memory: 10.76GB
+2022-06-16 15:16:43,611 - GeForce RTX 2080 Ti 	 Memory: 10.76GB
+2022-06-16 15:58:25,561 - 950 training examples, 50 val examples, 50 test examples
+2022-06-16 15:58:25,703 - DistributedDataParallel(
+  (module): CombinedSpatiotemporalModel(
+    (spatial_model): IndependentCNF(
+      squash_time=False
+      (cnf): TimeVariableCNF(
+        method=dopri5, tol=0.0001, energy=0.0001, jacnorm=0.0001
+        (func): SequentialDiffEq(
+          (layers): ModuleList(
+            (0): ConcatLinear_v2(
+              (_layer): Linear(in_features=2, out_features=64, bias=True)
+              (_hyper_bias): Linear(in_features=1, out_features=64, bias=False)
+            )
+            (1): TimeDependentSwish(
+              (beta): Sequential(
+                (0): Linear(in_features=1, out_features=64, bias=True)
+                (1): Softplus(beta=1, threshold=20)
+                (2): Linear(in_features=64, out_features=64, bias=True)
+                (3): Softplus(beta=1, threshold=20)
+              )
+            )
+            (2): ConcatLinear_v2(
+              (_layer): Linear(in_features=64, out_features=64, bias=True)
+              (_hyper_bias): Linear(in_features=1, out_features=64, bias=False)
+            )
+            (3): TimeDependentSwish(
+              (beta): Sequential(
+                (0): Linear(in_features=1, out_features=64, bias=True)
+                (1): Softplus(beta=1, threshold=20)
+                (2): Linear(in_features=64, out_features=64, bias=True)
+                (3): Softplus(beta=1, threshold=20)
+              )
+            )
+            (4): ConcatLinear_v2(
+              (_layer): Linear(in_features=64, out_features=64, bias=True)
+              (_hyper_bias): Linear(in_features=1, out_features=64, bias=False)
+            )
+            (5): TimeDependentSwish(
+              (beta): Sequential(
+                (0): Linear(in_features=1, out_features=64, bias=True)
+                (1): Softplus(beta=1, threshold=20)
+                (2): Linear(in_features=64, out_features=64, bias=True)
+                (3): Softplus(beta=1, threshold=20)
+              )
+            )
+            (6): ConcatLinear_v2(
+              (_layer): Linear(in_features=64, out_features=2, bias=True)
+              (_hyper_bias): Linear(in_features=1, out_features=2, bias=False)
+            )
+          )
+        )
+      )
+    )
+    (temporal_model): HomogeneousPoissonPointProcess()
+  )
+)
+2022-06-16 15:58:26,481 - Iter 0 | Epoch 0 | LR 0.00100 | Time 0.8 | Temporal -1.9341(-1.9341) | Spatial -2.9206(-2.9206) | GradNorm 10.99(10.99) | NFE 64 | Mem 3249.49 MB
+2022-06-16 15:58:27,038 - [Test] Iter 0 | Val Temporal -1.8448 | Val Spatial -2.9160 | Test Temporal -1.8406 | Test Spatial -2.7876
+2022-06-16 15:58:29,606 - Iter 10 | Epoch 0 | LR 0.00100 | Time 2.5 | Temporal -1.8409(-1.9176) | Spatial -2.6669(-2.8938) | GradNorm 12.27(15.78) | NFE 64 | Mem 3249.49 MB
+2022-06-16 15:58:33,069 - Iter 20 | Epoch 0 | LR 0.00100 | Time 3.5 | Temporal -1.7848(-1.9019) | Spatial -2.0521(-2.8059) | GradNorm 202.05(28.27) | NFE 76 | Mem 3249.49 MB
+2022-06-16 15:58:36,895 - Iter 30 | Epoch 0 | LR 0.00100 | Time 3.8 | Temporal -1.8766(-1.8900) | Spatial -2.3622(-2.7220) | GradNorm 6.80(40.38) | NFE 100 | Mem 3249.49 MB
+2022-06-16 15:58:40,843 - Iter 40 | Epoch 0 | LR 0.00100 | Time 3.9 | Temporal -1.8430(-1.8852) | Spatial -2.4390(-2.6444) | GradNorm 155.16(48.15) | NFE 76 | Mem 3249.49 MB
+2022-06-16 15:58:44,894 - Iter 50 | Epoch 1 | LR 0.00100 | Time 4.0 | Temporal -1.8161(-1.8760) | Spatial -2.2139(-2.5610) | GradNorm 182.75(62.81) | NFE 94 | Mem 3249.49 MB
+2022-06-16 15:58:49,071 - Iter 60 | Epoch 1 | LR 0.00100 | Time 4.2 | Temporal -1.7917(-1.8631) | Spatial -2.0816(-2.4829) | GradNorm 190.43(73.18) | NFE 82 | Mem 3249.49 MB
+2022-06-16 15:58:53,456 - Iter 70 | Epoch 1 | LR 0.00100 | Time 4.4 | Temporal -1.7922(-1.8556) | Spatial -2.1524(-2.4100) | GradNorm 234.89(85.05) | NFE 70 | Mem 3250.30 MB

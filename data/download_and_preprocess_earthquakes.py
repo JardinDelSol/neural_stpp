@@ -24,7 +24,7 @@ def preprocess():
     df = pd.read_csv("earthquakes/1990_2019.csv")
 
     # filter earthquakes in Japan
-    df = df[df["place"].str.contains("Japan")]
+    df = df[df["place"].str.contains("Japan", na=False)]
     df = df[["time", "longitude", "latitude"]]
 
     # write time as a days since 2010-01-01
