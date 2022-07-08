@@ -71,8 +71,8 @@ class TimeVariableCNF(nn.Module):
         tol = tol or self.tol
         method = method or self.method
         e = torch.randn_like(x)[:, : self.dim]
-        energy = torch.zeros(1).to(x)
-        jacnorm = torch.zeros(1).to(x)
+        energy = torch.zeros(1).to(x)  # Q
+        jacnorm = torch.zeros(1).to(x)  # Q
         initial_state = (t0, t1, e, x, logpx, energy, jacnorm)
 
         if intermediate_states > 1:
@@ -83,7 +83,7 @@ class TimeVariableCNF(nn.Module):
             tt = torch.tensor([self.start_time, self.end_time]).to(t0)
 
         solution = odeint_adjoint(
-            self,
+            self,  # pass self as a function
             initial_state,
             tt,
             rtol=tol,
@@ -97,7 +97,7 @@ class TimeVariableCNF(nn.Module):
         else:
             _, _, _, y, logpy, energy, jacnorm = tuple(s[-1] for s in solution)
 
-        regularization = self.energy_regularization * (
+        regularization = self.energy_regularization * (  # Q
             energy - energy.detach()
         ) + self.jacnorm_regularization * (jacnorm - jacnorm.detach())
 
@@ -116,7 +116,7 @@ class TimeVariableCNF(nn.Module):
             x = x.requires_grad_(True)
 
             dx = self.func(t, x)  # get dx
-            dx = dx * ratio.reshape(-1, *([1] * (x.ndim - 1)))
+            dx = dx * ratio.reshape(-1, *([1] * (x.ndim - 1)))  # same as unsqueeze
 
             if self.nonself_connections:
                 dx_div = self.func(t, x, rm_nonself_grads=True)
@@ -131,12 +131,12 @@ class TimeVariableCNF(nn.Module):
                 vjp = torch.autograd.grad(
                     dx_div[:, : self.dim],
                     x,
-                    e,
+                    e,  # Q
                     create_graph=self.training,
                     retain_graph=self.training,
                 )[0]
                 vjp = vjp[:, : self.dim]
-                div = torch.sum(vjp * e, dim=1)
+                div = torch.sum(vjp * e, dim=1)  # eq (6)
 
             # Debugging code for checking gradient connections.
             # Need to send T and N to self from attncnf.
@@ -160,7 +160,7 @@ class TimeVariableCNF(nn.Module):
             torch.zeros_like(t1),
             torch.zeros_like(e),
             dx,
-            -div,
+            -div,  # amount for logp to change
             d_energy,
             d_jacnorm,
         )

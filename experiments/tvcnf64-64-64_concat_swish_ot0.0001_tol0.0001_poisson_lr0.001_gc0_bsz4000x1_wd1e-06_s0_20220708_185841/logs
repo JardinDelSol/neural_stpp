@@ -1,0 +1,40 @@
+2022-07-08 18:58:47,683 - Namespace(actfn='swish', data='citibikes', experiment_dir='experiments', experiment_id='20220708_185841', gradclip=10000000000.0, hdims='64-64-64', l2_attn=False, layer_type='concat', logfreq=10, lr=0.001, max_events=4000, model='tvcnf', momentum=0.9, naive_hutch=False, ngpus=1, num_iterations=10000, otreg_strength=0.0001, port=17363, resume=None, seed=0, share_hidden=True, solve_reverse=False, test_bsz=32, testfreq=100, tol=0.0001, tpp='poisson', tpp_actfn='softplus', tpp_cond=True, tpp_hdims='32-32', tpp_otreg_strength=0.0001, tpp_style='gru', warmup_itrs=0, weight_decay=1e-06)
+2022-07-08 18:58:47,684 - Saving to experiments/tvcnf64-64-64_concat_swish_ot0.0001_tol0.0001_poisson_lr0.001_gc0_bsz4000x1_wd1e-06_s0_20220708_185841
+2022-07-08 18:58:47,689 - Found 4 CUDA devices.
+2022-07-08 18:58:47,694 - GeForce RTX 2080 Ti 	 Memory: 10.76GB
+2022-07-08 18:58:47,694 - GeForce RTX 2080 Ti 	 Memory: 10.76GB
+2022-07-08 18:58:47,694 - GeForce RTX 2080 Ti 	 Memory: 10.76GB
+2022-07-08 18:58:47,695 - GeForce RTX 2080 Ti 	 Memory: 10.76GB
+2022-07-08 18:58:47,695 - Traceback (most recent call last):
+  File "/home/cvmlserver/yujees/neural_stpp/train-bike_tvCNF.py", line 166, in main
+    _main(rank, world_size, args, savepath, logger)
+  File "/home/cvmlserver/yujees/neural_stpp/train-bike_tvCNF.py", line 204, in _main
+    t0, t1 = map(lambda x: cast(x, device), get_t0_t1(args.data))
+  File "/home/cvmlserver/yujees/neural_stpp/train-bike_tvCNF.py", line 118, in get_t0_t1
+    raise ValueError(f"Unknown dataset {data}")
+ValueError: Unknown dataset citibikes
+
+2022-07-08 18:58:48,880 - Traceback (most recent call last):
+  File "/home/cvmlserver/yujees/neural_stpp/train-bike_tvCNF.py", line 652, in <module>
+    mp.spawn(main, args=(args.ngpus, args, savepath), nprocs=args.ngpus, join=True)
+  File "/home/cvmlserver/anaconda3/envs/nstpp/lib/python3.8/site-packages/torch/multiprocessing/spawn.py", line 240, in spawn
+    return start_processes(fn, args, nprocs, join, daemon, start_method='spawn')
+  File "/home/cvmlserver/anaconda3/envs/nstpp/lib/python3.8/site-packages/torch/multiprocessing/spawn.py", line 198, in start_processes
+    while not context.join():
+  File "/home/cvmlserver/anaconda3/envs/nstpp/lib/python3.8/site-packages/torch/multiprocessing/spawn.py", line 160, in join
+    raise ProcessRaisedException(msg, error_index, failed_process.pid)
+torch.multiprocessing.spawn.ProcessRaisedException: 
+
+-- Process 0 terminated with the following error:
+Traceback (most recent call last):
+  File "/home/cvmlserver/anaconda3/envs/nstpp/lib/python3.8/site-packages/torch/multiprocessing/spawn.py", line 69, in _wrap
+    fn(i, *args)
+  File "/home/cvmlserver/yujees/neural_stpp/train-bike_tvCNF.py", line 166, in main
+    _main(rank, world_size, args, savepath, logger)
+  File "/home/cvmlserver/yujees/neural_stpp/train-bike_tvCNF.py", line 204, in _main
+    t0, t1 = map(lambda x: cast(x, device), get_t0_t1(args.data))
+  File "/home/cvmlserver/yujees/neural_stpp/train-bike_tvCNF.py", line 118, in get_t0_t1
+    raise ValueError(f"Unknown dataset {data}")
+ValueError: Unknown dataset citibikes
+
+

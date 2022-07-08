@@ -192,7 +192,8 @@ def _main(rank, world_size, args, savepath, logger):
     if rank == 0:
         if device.type == "cuda":
             logger.info("Found {} CUDA devices.".format(torch.cuda.device_count()))
-            for i in range(torch.cuda.device_count()):
+            # for i in range(torch.cuda.device_count()):
+            for i in [2, 3]:
                 props = torch.cuda.get_device_properties(i)
                 logger.info(
                     "{} \t Memory: {:.2f}GB".format(

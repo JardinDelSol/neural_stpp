@@ -64,7 +64,7 @@ def cleanup():
 def memory_usage_psutil():
     # return the memory usage in MB
     process = psutil.Process(os.getpid())
-    mem = process.memory_info()[0] / float(2 ** 20)
+    mem = process.memory_info()[0] / float(2**20)
     return mem
 
 
@@ -195,7 +195,7 @@ def _main(rank, world_size, args, savepath, logger):
                 props = torch.cuda.get_device_properties(i)
                 logger.info(
                     "{} \t Memory: {:.2f}GB".format(
-                        props.name, props.total_memory / (1024 ** 3)
+                        props.name, props.total_memory / (1024**3)
                     )
                 )
         else:
@@ -648,7 +648,7 @@ if __name__ == "__main__":
         args.gradclip = 1e10
 
     try:
-        mp.set_start_method("spawn")
+        mp.set_start_method("forkserver")
         mp.spawn(main, args=(args.ngpus, args, savepath), nprocs=args.ngpus, join=True)
     except Exception as e:
         import traceback

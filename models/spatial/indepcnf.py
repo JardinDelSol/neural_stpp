@@ -67,14 +67,14 @@ class IndependentCNF(nn.Module):
             t0 = torch.zeros_like(event_times)
             t1 = torch.zeros_like(event_times) + self.time_offset
         else:
-            t0 = event_times + self.time_offset
-            t1 = torch.zeros_like(event_times)
+            t0 = event_times + self.time_offset  # t_{i}
+            t1 = torch.zeros_like(event_times)  # t_{i-1}
 
         self.cnf.nfe = 0
         z, delta_logp = self.cnf.integrate(
             t0, t1, spatial_locations, torch.zeros_like(event_times)
-        )
-        logpz = gaussian_loglik(z, self.z_mean, self.z_logstd).sum(-1)
+        )  # Q logp = 0 : b/c time is irregular
+        logpz = gaussian_loglik(z, self.z_mean, self.z_logstd).sum(-1)  # z0 vs gaussian
         logpx = logpz - delta_logp  # (N * T)
         return logpx.reshape(N, T) * input_mask  # (N,)
 

@@ -192,7 +192,8 @@ def _main(rank, world_size, args, savepath, logger):
     if rank == 0:
         if device.type == "cuda":
             logger.info("Found {} CUDA devices.".format(torch.cuda.device_count()))
-            for i in range(torch.cuda.device_count()):
+            # for i in range(torch.cuda.device_count()):
+            for i in [2, 3]:
                 props = torch.cuda.get_device_properties(i)
                 logger.info(
                     "{} \t Memory: {:.2f}GB".format(
@@ -549,13 +550,13 @@ if __name__ == "__main__":
         "--model",
         type=str,
         choices=["cond_gmm", "gmm", "cnf", "tvcnf", "jumpcnf", "attncnf"],
-        default="cnf",
+        default="tvcnf",
     )
     parser.add_argument(
         "--tpp",
         type=str,
         choices=["poisson", "hawkes", "correcting", "neural"],
-        default="poisson",
+        default="neural",
     )
     parser.add_argument("--actfn", type=str, default="swish")
     parser.add_argument(

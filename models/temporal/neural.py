@@ -109,7 +109,7 @@ class HiddenStateODEFuncList(nn.Module):
     def update_state(self, t, tpp_state, cond=None):
         states = torch.split(
             tpp_state, tpp_state.shape[-1] // len(self.odefuncs), dim=-1
-        )
+        )  # Q split? : b/c mutlipe dim separately update
         upds = []
         for s, func in zip(states, self.odefuncs):
             upds.append(func.update_state(t, s, cond))
@@ -145,7 +145,7 @@ class NeuralPointProcess(TemporalPointProcess):
         assert self.hdim % 2 == 0
         self._init_state = nn.Parameter(
             torch.randn(hidden_dims[0]) / math.sqrt(hidden_dims[0])
-        )
+        )  # Q
 
         dynamics = []
         for i in range(separate):
@@ -258,7 +258,7 @@ class NeuralPointProcess(TemporalPointProcess):
 
             state = tuple(s[-1] for s in state_traj)
             Lambda, tpp_state = state
-            intensities.append(self.get_intensity(tpp_state).reshape(-1))
+            intensities.append(self.get_intensity(tpp_state).reshape(-1))  # Q lambda?
 
             if i < T - 1 or t1 is not None:
                 cond = spatial_location[:, i] if spatial_location is not None else None
@@ -397,7 +397,7 @@ class TimeVariableODE(nn.Module):
         method = method or self.method
 
         solution = odeint(
-            self,
+            self,  # self as a function
             (t0, t1, torch.zeros(1).to(x0[0]), *x0),
             torch.linspace(self.start_time, self.end_time, nlinspace + 1).to(t0),
             rtol=self.rtol,
