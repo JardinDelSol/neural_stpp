@@ -648,7 +648,7 @@ if __name__ == "__main__":
         args.gradclip = 1e10
 
     try:
-        mp.set_start_method("forkserver")
+        mp.set_start_method("spawn")
         mp.spawn(main, args=(args.ngpus, args, savepath), nprocs=args.ngpus, join=True)
     except Exception as e:
         import traceback
