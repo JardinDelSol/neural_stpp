@@ -1,0 +1,8 @@
+2022-06-17 12:15:00,730 - Namespace(actfn='swish', data='earthquakes_jp', experiment_dir='experiments', experiment_id='20220617_121454', gradclip=10000000000.0, hdims='64-64-64', l2_attn=False, layer_type='concat', logfreq=10, lr=0.001, max_events=4000, model='jumpcnf', momentum=0.9, naive_hutch=False, ngpus=1, num_iterations=10000, otreg_strength=0.0001, port=17507, resume=None, seed=0, share_hidden=True, solve_reverse=False, test_bsz=32, testfreq=100, tol=0.0001, tpp='neural', tpp_actfn='softplus', tpp_cond=True, tpp_hdims='32-32', tpp_otreg_strength=0.0001, tpp_style='gru', warmup_itrs=0, weight_decay=1e-06)
+2022-06-17 12:15:00,731 - Saving to experiments/jumpcnf64-64-64_concat_swish_ot0.0001_tol0.0001_neural32-32gru_softplus_ot0.0001_cond_sharehidden_lr0.001_gc0_bsz4000x1_wd1e-06_s0_20220617_121454
+2022-06-17 12:15:00,735 - Found 4 CUDA devices.
+2022-06-17 12:15:00,739 - GeForce RTX 2080 Ti 	 Memory: 10.76GB
+2022-06-17 12:15:00,739 - GeForce RTX 2080 Ti 	 Memory: 10.76GB
+2022-06-17 12:15:00,739 - GeForce RTX 2080 Ti 	 Memory: 10.76GB
+2022-06-17 12:15:00,740 - GeForce RTX 2080 Ti 	 Memory: 10.76GB
+2022-06-17 12:15:04,690 - 950 training examples, 50 val examples, 50 test examples

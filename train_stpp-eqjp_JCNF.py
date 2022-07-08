@@ -549,13 +549,13 @@ if __name__ == "__main__":
         "--model",
         type=str,
         choices=["cond_gmm", "gmm", "cnf", "tvcnf", "jumpcnf", "attncnf"],
-        default="tvcnf",
+        default="jumpcnf",
     )
     parser.add_argument(
         "--tpp",
         type=str,
         choices=["poisson", "hawkes", "correcting", "neural"],
-        default="poisson",
+        default="neural",
     )
     parser.add_argument("--actfn", type=str, default="swish")
     parser.add_argument(

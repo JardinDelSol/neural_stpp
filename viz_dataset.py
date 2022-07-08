@@ -3,6 +3,7 @@
 import argparse
 import os
 import matplotlib
+
 matplotlib.use("Agg")  # noqa
 import matplotlib.pyplot as plt
 import matplotlib.patheffects as PathEffects
@@ -41,7 +42,9 @@ def plot_coordinates(coords, S_std, S_mean, savepath, dataset_name):
 
     if MAPS[dataset_name]:
         map_img = plt.imread(MAPS[dataset_name])
-        fig, ax = plt.subplots(figsize=(FIGSIZE, FIGSIZE * map_img.shape[0] / map_img.shape[1]))
+        fig, ax = plt.subplots(
+            figsize=(FIGSIZE, FIGSIZE * map_img.shape[0] / map_img.shape[1])
+        )
         ax.imshow(map_img, zorder=0, extent=BBOXES[dataset_name])
     else:
         fig, ax = plt.subplots(figsize=(FIGSIZE, FIGSIZE))
@@ -50,9 +53,13 @@ def plot_coordinates(coords, S_std, S_mean, savepath, dataset_name):
     ax.set_xlim(BBOXES[dataset_name][0], BBOXES[dataset_name][1])
     ax.set_ylim(BBOXES[dataset_name][2], BBOXES[dataset_name][3])
 
-    plt.axis('off')
+    plt.axis("off")
     os.makedirs(os.path.join(savepath, f"{dataset_name}"), exist_ok=True)
-    plt.savefig(os.path.join(savepath, f"{dataset_name}", f"{dataset_name}.png"), bbox_inches='tight', dpi=DPI)
+    plt.savefig(
+        os.path.join(savepath, f"{dataset_name}", f"{dataset_name}.png"),
+        bbox_inches="tight",
+        dpi=DPI,
+    )
     plt.close()
 
 
@@ -65,36 +72,60 @@ def plot_kde(coords, S_std, S_mean, savepath, dataset_name, text=None, name=None
 
     if MAPS[dataset_name]:
         map_img = plt.imread(MAPS[dataset_name])
-        fig, ax = plt.subplots(figsize=(FIGSIZE, FIGSIZE * map_img.shape[0] / map_img.shape[1]))
+        fig, ax = plt.subplots(
+            figsize=(FIGSIZE, FIGSIZE * map_img.shape[0] / map_img.shape[1])
+        )
         ax.imshow(map_img, zorder=0, extent=BBOXES[dataset_name])
     else:
         fig, ax = plt.subplots(figsize=(FIGSIZE, FIGSIZE))
 
     kernel = gaussian_kde(np.stack([longs, lats], axis=0))
     kernel.inv_cov = np.diag(np.diag(kernel.inv_cov))
-    X, Y = np.mgrid[BBOXES[dataset_name][0]:BBOXES[dataset_name][1]:100j, BBOXES[dataset_name][2]:BBOXES[dataset_name][3]:100j]
+    X, Y = np.mgrid[
+        BBOXES[dataset_name][0] : BBOXES[dataset_name][1] : 100j,
+        BBOXES[dataset_name][2] : BBOXES[dataset_name][3] : 100j,
+    ]
     positions = np.vstack([X.ravel(), Y.ravel()])
     Z = np.reshape(kernel(positions).T, X.shape)
-    ax.contourf(X, Y, Z, levels=10, alpha=0.6, cmap='RdGy')
+    ax.contourf(X, Y, Z, levels=10, alpha=0.6, cmap="RdGy")
     ax.set_xlim(BBOXES[dataset_name][0], BBOXES[dataset_name][1])
     ax.set_ylim(BBOXES[dataset_name][2], BBOXES[dataset_name][3])
 
     if text is not None:
-        txt = ax.text(0.15, 0.9, text,
-                      horizontalalignment="center",
-                      verticalalignment="center",
-                      transform=ax.transAxes,
-                      size=16,
-                      color='white')
-        txt.set_path_effects([PathEffects.withStroke(linewidth=5, foreground='black')])
+        txt = ax.text(
+            0.15,
+            0.9,
+            text,
+            horizontalalignment="center",
+            verticalalignment="center",
+            transform=ax.transAxes,
+            size=16,
+            color="white",
+        )
+        txt.set_path_effects([PathEffects.withStroke(linewidth=5, foreground="black")])
 
-    plt.axis('off')
+    plt.axis("off")
     os.makedirs(os.path.join(savepath, f"{dataset_name}"), exist_ok=True)
-    plt.savefig(os.path.join(savepath, f"{dataset_name}", f"{name}.png"), bbox_inches='tight', dpi=DPI)
+    plt.savefig(
+        os.path.join(savepath, f"{dataset_name}", f"{name}.png"),
+        bbox_inches="tight",
+        dpi=DPI,
+    )
     plt.close()
 
 
-def plot_density(loglik_fn, spatial_locations, index, S_mean, S_std, savepath, dataset_name, device, text=None, fp64=False):
+def plot_density(
+    loglik_fn,
+    spatial_locations,
+    index,
+    S_mean,
+    S_std,
+    savepath,
+    dataset_name,
+    device,
+    text=None,
+    fp64=False,
+):
     N = 50
 
     x = np.linspace(BBOXES[dataset_name][0], BBOXES[dataset_name][1], N)
@@ -110,45 +141,75 @@ def plot_density(loglik_fn, spatial_locations, index, S_mean, S_std, savepath, d
 
     if MAPS[dataset_name]:
         map_img = plt.imread(MAPS[dataset_name])
-        fig, ax = plt.subplots(figsize=(FIGSIZE, FIGSIZE * map_img.shape[0] / map_img.shape[1]))
+        fig, ax = plt.subplots(
+            figsize=(FIGSIZE, FIGSIZE * map_img.shape[0] / map_img.shape[1])
+        )
         ax.imshow(map_img, zorder=0, extent=BBOXES[dataset_name])
     else:
         fig, ax = plt.subplots(figsize=(FIGSIZE, FIGSIZE))
 
     Z = logp.exp().detach().cpu().numpy().reshape(N, N)
-    ax.contourf(X, Y, Z, levels=20, alpha=0.7, cmap='RdGy')
+    ax.contourf(X, Y, Z, levels=20, alpha=0.7, cmap="RdGy")
 
     spatial_locations = spatial_locations * np.array(S_std) + np.array(S_mean)
-    ax.scatter(spatial_locations[:, 0], spatial_locations[:, 1], s=20**2, alpha=1.0, marker="x", color="k")
+    ax.scatter(
+        spatial_locations[:, 0],
+        spatial_locations[:, 1],
+        s=20**2,
+        alpha=1.0,
+        marker="x",
+        color="k",
+    )
 
     ax.set_xlim(BBOXES[dataset_name][0], BBOXES[dataset_name][1])
     ax.set_ylim(BBOXES[dataset_name][2], BBOXES[dataset_name][3])
 
     if text:
-        txt = ax.text(0.15, 0.9, text,
-                      horizontalalignment="center",
-                      verticalalignment="center",
-                      transform=ax.transAxes,
-                      size=16,
-                      color='white')
-        txt.set_path_effects([PathEffects.withStroke(linewidth=5, foreground='black')])
+        txt = ax.text(
+            0.15,
+            0.9,
+            text,
+            horizontalalignment="center",
+            verticalalignment="center",
+            transform=ax.transAxes,
+            size=16,
+            color="white",
+        )
+        txt.set_path_effects([PathEffects.withStroke(linewidth=5, foreground="black")])
 
-    plt.axis('off')
+    plt.axis("off")
     os.makedirs(os.path.join(savepath, "figs"), exist_ok=True)
-    np.savez(f"{savepath}/figs/data{index}.npz", **{"X": X, "Y": Y, "Z": Z, "spatial_locations": spatial_locations})
-    plt.savefig(os.path.join(savepath, "figs", f"density{index}.png"), bbox_inches='tight', dpi=DPI)
+    np.savez(
+        f"{savepath}/figs/data{index}.npz",
+        **{"X": X, "Y": Y, "Z": Z, "spatial_locations": spatial_locations},
+    )
+    plt.savefig(
+        os.path.join(savepath, "figs", f"density{index}.png"),
+        bbox_inches="tight",
+        dpi=DPI,
+    )
     plt.close()
 
 
-def plot_intensities(list_of_event_times, list_of_intensities, list_of_timevals, savepath):
-    fig, axes = plt.subplots(nrows=len(list_of_event_times), figsize=(12, 1.5 * len(list_of_event_times)), sharex=True)
-    for ax, event_times, intensities, timevals in zip(axes, list_of_event_times, list_of_intensities, list_of_timevals):
+def plot_intensities(
+    list_of_event_times, list_of_intensities, list_of_timevals, savepath
+):
+    fig, axes = plt.subplots(
+        nrows=len(list_of_event_times),
+        figsize=(12, 1.5 * len(list_of_event_times)),
+        sharex=True,
+    )
+    for ax, event_times, intensities, timevals in zip(
+        axes, list_of_event_times, list_of_intensities, list_of_timevals
+    ):
         ax.plot(timevals, intensities)
-        ax.vlines(event_times, ymin=0.0, ymax=100.0, linestyles="--", linewidth=1, alpha=0.35)
+        ax.vlines(
+            event_times, ymin=0.0, ymax=100.0, linestyles="--", linewidth=1, alpha=0.35
+        )
         ax.set_xlim([timevals[0], timevals[-1]])
-        ax.set_ylim([0., np.max(intensities) + 0.2])
+        ax.set_ylim([0.0, np.max(intensities) + 0.2])
     os.makedirs(os.path.dirname(savepath), exist_ok=True)
-    plt.savefig(savepath, bbox_inches='tight', dpi=DPI)
+    plt.savefig(savepath, bbox_inches="tight", dpi=DPI)
     plt.close()
 
 
@@ -181,5 +242,17 @@ if __name__ == "__main__":
     savepath = "dataset_figs"
     seq = dataset.__getitem__(0)
     event_times, spatial_locations = seq[:, 0], seq[:, 1:]
-    plot_coordinates(spatial_locations, S_mean=dataset.S_mean, S_std=dataset.S_std, savepath=savepath, dataset_name=args.data)
-    plot_kde(spatial_locations, S_mean=dataset.S_mean, S_std=dataset.S_std, savepath=savepath, dataset_name=args.data)
+    plot_coordinates(
+        spatial_locations,
+        S_mean=dataset.S_mean,
+        S_std=dataset.S_std,
+        savepath=savepath,
+        dataset_name=args.data,
+    )
+    plot_kde(
+        spatial_locations,
+        S_mean=dataset.S_mean,
+        S_std=dataset.S_std,
+        savepath=savepath,
+        dataset_name=args.data,
+    )

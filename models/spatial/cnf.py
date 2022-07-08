@@ -264,7 +264,7 @@ def build_fc_odefunc(
         layers = []
         for d_in, d_out in zip(dims[:-1], dims[1:]):
             layers.append(layer_fn(d_in, d_out))
-            layers.append(ACTFNS[actfn](d_out))
+            layers.append(ACTFNS[actfn](d_out))  # activation(swish)
         layers.append(layer_fn(hidden_dims[-1], out_dim))
     else:
         layers = [layer_fn(dim, out_dim)]
@@ -276,7 +276,7 @@ def build_fc_odefunc(
         # zero out weights for auxiliary inputs.
         layers[0]._layer.weight.data[:, nonzero_dim:].fill_(0)
 
-    if zero_init:
+    if zero_init:  # init weight and biases of NODE
         for m in layers[-1].modules():
             if isinstance(m, nn.Linear):
                 m.weight.data.fill_(0)
