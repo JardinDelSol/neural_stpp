@@ -39,7 +39,6 @@ class IndependentCNF(nn.Module):
             energy_regularization=otreg_strength,
             jacnorm_regularization=otreg_strength,
         )
-
         self.z_mean = nn.Parameter(torch.zeros(1, dim))
         self.z_logstd = nn.Parameter(torch.zeros(1, dim))
 

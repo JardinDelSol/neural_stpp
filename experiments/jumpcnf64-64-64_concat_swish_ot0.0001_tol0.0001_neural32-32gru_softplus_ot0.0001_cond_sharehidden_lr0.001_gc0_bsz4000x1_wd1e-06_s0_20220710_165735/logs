@@ -1,0 +1,130 @@
+2022-07-10 16:57:41,748 - Namespace(actfn='swish', data='earthquakes_jp', experiment_dir='experiments', experiment_id='20220710_165735', gradclip=10000000000.0, hdims='64-64-64', l2_attn=False, layer_type='concat', logfreq=10, lr=0.001, max_events=4000, model='jumpcnf', momentum=0.9, naive_hutch=False, ngpus=1, num_iterations=10000, otreg_strength=0.0001, port=11058, resume=None, seed=0, share_hidden=True, solve_reverse=False, test_bsz=32, testfreq=100, tol=0.0001, tpp='neural', tpp_actfn='softplus', tpp_cond=True, tpp_hdims='32-32', tpp_otreg_strength=0.0001, tpp_style='gru', warmup_itrs=0, weight_decay=1e-06)
+2022-07-10 16:57:41,749 - Saving to experiments/jumpcnf64-64-64_concat_swish_ot0.0001_tol0.0001_neural32-32gru_softplus_ot0.0001_cond_sharehidden_lr0.001_gc0_bsz4000x1_wd1e-06_s0_20220710_165735
+2022-07-10 16:57:41,754 - Found 4 CUDA devices.
+2022-07-10 16:57:41,757 - GeForce RTX 2080 Ti 	 Memory: 10.76GB
+2022-07-10 16:57:41,758 - GeForce RTX 2080 Ti 	 Memory: 10.76GB
+2022-07-10 16:57:45,648 - 950 training examples, 50 val examples, 50 test examples
+2022-07-10 17:01:48,000 - DistributedDataParallel(
+  (module): JumpCNFSpatiotemporalModel(
+    (temporal_model): NeuralPointProcess(
+      (hidden_state_dynamics): HiddenStateODEFuncList(
+        (odefuncs): ModuleList(
+          (0): GRUHiddenStateODEFunc(
+            (dstate_net): SequentialDiffEq(
+              (layers): ModuleList(
+                (0): ConcatLinear_v2(
+                  (_layer): Linear(in_features=32, out_features=32, bias=True)
+                  (_hyper_bias): Linear(in_features=1, out_features=32, bias=False)
+                )
+                (1): ActNorm(32)
+                (2): Softplus(beta=1, threshold=20)
+                (3): ConcatLinear_v2(
+                  (_layer): Linear(in_features=32, out_features=32, bias=True)
+                  (_hyper_bias): Linear(in_features=1, out_features=32, bias=False)
+                )
+              )
+            )
+            (update_net): GRUCell(2, 32)
+          )
+        )
+      )
+      (ode_solver): TimeVariableODE(
+        method=dopri5, atol=0.0001, rtol=0.0001, energy=0.0001
+        (func): IntensityODEFunc(
+          (dstate_fn): HiddenStateODEFuncList(
+            (odefuncs): ModuleList(
+              (0): GRUHiddenStateODEFunc(
+                (dstate_net): SequentialDiffEq(
+                  (layers): ModuleList(
+                    (0): ConcatLinear_v2(
+                      (_layer): Linear(in_features=32, out_features=32, bias=True)
+                      (_hyper_bias): Linear(in_features=1, out_features=32, bias=False)
+                    )
+                    (1): ActNorm(32)
+                    (2): Softplus(beta=1, threshold=20)
+                    (3): ConcatLinear_v2(
+                      (_layer): Linear(in_features=32, out_features=32, bias=True)
+                      (_hyper_bias): Linear(in_features=1, out_features=32, bias=False)
+                    )
+                  )
+                )
+                (update_net): GRUCell(2, 32)
+              )
+            )
+          )
+          (intensity_fn): Sequential(
+            (0): Linear(in_features=16, out_features=64, bias=True)
+            (1): Softplus(beta=1, threshold=20)
+            (2): Linear(in_features=64, out_features=1, bias=True)
+          )
+        )
+      )
+    )
+    (spatial_model): JumpCNF(
+      (cnf): TimeVariableCNF(
+        method=dopri5, tol=0.0001, energy=0.0001, jacnorm=0.0001
+        (func): AuxODEFunc(
+          (func): SequentialDiffEq(
+            (layers): ModuleList(
+              (0): ConcatLinear_v2(
+                (_layer): Linear(in_features=18, out_features=64, bias=True)
+                (_hyper_bias): Linear(in_features=1, out_features=64, bias=False)
+              )
+              (1): TimeDependentSwish(
+                (beta): Sequential(
+                  (0): Linear(in_features=1, out_features=64, bias=True)
+                  (1): Softplus(beta=1, threshold=20)
+                  (2): Linear(in_features=64, out_features=64, bias=True)
+                  (3): Softplus(beta=1, threshold=20)
+                )
+              )
+              (2): ConcatLinear_v2(
+                (_layer): Linear(in_features=64, out_features=64, bias=True)
+                (_hyper_bias): Linear(in_features=1, out_features=64, bias=False)
+              )
+              (3): TimeDependentSwish(
+                (beta): Sequential(
+                  (0): Linear(in_features=1, out_features=64, bias=True)
+                  (1): Softplus(beta=1, threshold=20)
+                  (2): Linear(in_features=64, out_features=64, bias=True)
+                  (3): Softplus(beta=1, threshold=20)
+                )
+              )
+              (4): ConcatLinear_v2(
+                (_layer): Linear(in_features=64, out_features=64, bias=True)
+                (_hyper_bias): Linear(in_features=1, out_features=64, bias=False)
+              )
+              (5): TimeDependentSwish(
+                (beta): Sequential(
+                  (0): Linear(in_features=1, out_features=64, bias=True)
+                  (1): Softplus(beta=1, threshold=20)
+                  (2): Linear(in_features=64, out_features=64, bias=True)
+                  (3): Softplus(beta=1, threshold=20)
+                )
+              )
+              (6): ConcatLinear_v2(
+                (_layer): Linear(in_features=64, out_features=2, bias=True)
+                (_hyper_bias): Linear(in_features=1, out_features=2, bias=False)
+              )
+            )
+          )
+        )
+      )
+      (inst_flow): HypernetworkRadialFlow(
+        (radial_flows): ModuleList(
+          (0): RadialFlow()
+          (1): RadialFlow()
+          (2): RadialFlow()
+          (3): RadialFlow()
+        )
+        (hypernet): Sequential(
+          (0): Linear(in_features=19, out_features=128, bias=True)
+          (1): ReLU(inplace=True)
+          (2): Linear(in_features=128, out_features=128, bias=True)
+          (3): ReLU(inplace=True)
+          (4): Linear(in_features=128, out_features=16, bias=True)
+        )
+      )
+    )
+  )
+)

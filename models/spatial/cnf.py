@@ -135,8 +135,8 @@ class TimeVariableCNF(nn.Module):
                     create_graph=self.training,
                     retain_graph=self.training,
                 )[0]
-                vjp = vjp[:, : self.dim]
-                div = torch.sum(vjp * e, dim=1)  # eq (6)
+                vjp = vjp[:, : self.dim]  # Q) A: b/c aux
+                div = torch.sum(vjp * e, dim=1)  # replace this with matmul
 
             # Debugging code for checking gradient connections.
             # Need to send T and N to self from attncnf.
@@ -148,14 +148,14 @@ class TimeVariableCNF(nn.Module):
             dx = dx.detach()
             div = div.detach()
 
-        d_energy = torch.sum(dx * dx).reshape(1) / x.shape[0]
+        d_energy = torch.sum(dx * dx).reshape(1) / x.shape[0]  # Q
 
         if self.training:
             d_jacnorm = torch.sum(vjp * vjp).reshape(1) / x.shape[0]
         else:
             d_jacnorm = torch.zeros(1).to(x)
 
-        return (
+        result = (
             torch.zeros_like(t0),
             torch.zeros_like(t1),
             torch.zeros_like(e),
@@ -164,6 +164,7 @@ class TimeVariableCNF(nn.Module):
             d_energy,
             d_jacnorm,
         )
+        return result
 
     def extra_repr(self):
         return f"method={self.method}, tol={self.tol}, energy={self.energy_regularization}, jacnorm={self.jacnorm_regularization}"
@@ -207,7 +208,7 @@ def max_rms_norm(shapes):
         assert (
             total == tensor.numel()
         ), "Shapes do not total to the full size of the tensor."
-        return max(out)
+        return max(out)  # highest mse
 
     return _norm
 

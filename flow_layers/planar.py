@@ -124,7 +124,7 @@ class HypernetworkRadialFlow(nn.Module):
         )
 
     def forward(self, x, logpx=None, reverse=False, cond=None, **kwargs):
-        hyper_out = self.hypernet(cond)
+        hyper_out = self.hypernet(cond)  # [z0, log_a, B]
         out = (x, logpx)
         for i in range(self.nflows):
             start_ind = (self.nd + 2) * i

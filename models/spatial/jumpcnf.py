@@ -21,7 +21,7 @@ class AuxODEFunc(nn.Module):
         x, h = state[:, : self.dim], state[:, self.dim :]
         a = h[:, -self.aux_dim :]  # Only use a subset of h if aux_dim < h dim
         dx = self.func(t, torch.cat([x, a], dim=1))
-        dh = self.aux_odefunc(t - self.time_offset, h)
+        dh = self.aux_odefunc(t - self.time_offset, h)  # dh = 0
         return torch.cat([dx, dh], dim=1)
 
 
@@ -139,17 +139,17 @@ class JumpCNF(nn.Module):
             )
 
             if i == 0:
-                xs = spatial_locations[:, -1].reshape(N, 1, D)
+                xs = spatial_locations[:, -1].reshape(N, 1, D)  # last events' loc
                 dlogps = torch.zeros(N, 1).to(xs)
             else:
-                xs = torch.cat(
+                xs = torch.cat(  # N, i+1, d
                     [
                         spatial_locations[:, -i - 1].reshape(N, 1, D),
                         xs,
                     ],
                     dim=1,
                 )
-                dlogps = torch.cat(
+                dlogps = torch.cat(  # N, i+1
                     [
                         torch.zeros(N, 1).to(xs),
                         dlogps,
@@ -164,8 +164,8 @@ class JumpCNF(nn.Module):
             if aux_state is not None:
                 D_a = aux_state.shape[-1]
                 auxs = aux_state[:, -i - 1 :, :].expand(N, i + 1, D_a).reshape(-1, D_a)
-                inputs = [xs, auxs]
-                norm_fn = max_rms_norm([a.shape for a in inputs])
+                inputs = [xs, auxs]  # xs, hs
+                norm_fn = max_rms_norm([a.shape for a in inputs])  # not used
                 xs = torch.cat(inputs, dim=1)
 
             xs, dlogps = self.cnf.integrate(

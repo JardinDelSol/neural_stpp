@@ -1,0 +1,239 @@
+2022-07-10 20:50:13,444 - Namespace(actfn='swish', data='earthquakes_jp', experiment_dir='experiments', experiment_id='20220710_205007', gradclip=10000000000.0, hdims='64-64-64', l2_attn=False, layer_type='concat', logfreq=10, lr=0.001, max_events=4000, model='jumpcnf', momentum=0.9, naive_hutch=False, ngpus=1, num_iterations=10000, otreg_strength=0.0001, port=10184, resume=None, seed=0, share_hidden=True, solve_reverse=False, test_bsz=32, testfreq=100, tol=0.0001, tpp='neural', tpp_actfn='softplus', tpp_cond=True, tpp_hdims='32-32', tpp_otreg_strength=0.0001, tpp_style='gru', warmup_itrs=0, weight_decay=1e-06)
+2022-07-10 20:50:13,445 - Saving to experiments/jumpcnf64-64-64_concat_swish_ot0.0001_tol0.0001_neural32-32gru_softplus_ot0.0001_cond_sharehidden_lr0.001_gc0_bsz4000x1_wd1e-06_s0_20220710_205007
+2022-07-10 20:50:13,449 - Found 4 CUDA devices.
+2022-07-10 20:50:13,453 - GeForce RTX 2080 Ti 	 Memory: 10.76GB
+2022-07-10 20:50:13,453 - GeForce RTX 2080 Ti 	 Memory: 10.76GB
+2022-07-10 20:50:17,417 - 950 training examples, 50 val examples, 50 test examples
+2022-07-10 20:50:35,137 - DistributedDataParallel(
+  (module): JumpCNFSpatiotemporalModel(
+    (temporal_model): NeuralPointProcess(
+      (hidden_state_dynamics): HiddenStateODEFuncList(
+        (odefuncs): ModuleList(
+          (0): GRUHiddenStateODEFunc(
+            (dstate_net): SequentialDiffEq(
+              (layers): ModuleList(
+                (0): ConcatLinear_v2(
+                  (_layer): Linear(in_features=32, out_features=32, bias=True)
+                  (_hyper_bias): Linear(in_features=1, out_features=32, bias=False)
+                )
+                (1): ActNorm(32)
+                (2): Softplus(beta=1, threshold=20)
+                (3): ConcatLinear_v2(
+                  (_layer): Linear(in_features=32, out_features=32, bias=True)
+                  (_hyper_bias): Linear(in_features=1, out_features=32, bias=False)
+                )
+              )
+            )
+            (update_net): GRUCell(2, 32)
+          )
+        )
+      )
+      (ode_solver): TimeVariableODE(
+        method=dopri5, atol=0.0001, rtol=0.0001, energy=0.0001
+        (func): IntensityODEFunc(
+          (dstate_fn): HiddenStateODEFuncList(
+            (odefuncs): ModuleList(
+              (0): GRUHiddenStateODEFunc(
+                (dstate_net): SequentialDiffEq(
+                  (layers): ModuleList(
+                    (0): ConcatLinear_v2(
+                      (_layer): Linear(in_features=32, out_features=32, bias=True)
+                      (_hyper_bias): Linear(in_features=1, out_features=32, bias=False)
+                    )
+                    (1): ActNorm(32)
+                    (2): Softplus(beta=1, threshold=20)
+                    (3): ConcatLinear_v2(
+                      (_layer): Linear(in_features=32, out_features=32, bias=True)
+                      (_hyper_bias): Linear(in_features=1, out_features=32, bias=False)
+                    )
+                  )
+                )
+                (update_net): GRUCell(2, 32)
+              )
+            )
+          )
+          (intensity_fn): Sequential(
+            (0): Linear(in_features=16, out_features=64, bias=True)
+            (1): Softplus(beta=1, threshold=20)
+            (2): Linear(in_features=64, out_features=1, bias=True)
+          )
+        )
+      )
+    )
+    (spatial_model): JumpCNF(
+      (cnf): TimeVariableCNF(
+        method=dopri5, tol=0.0001, energy=0.0001, jacnorm=0.0001
+        (func): AuxODEFunc(
+          (func): SequentialDiffEq(
+            (layers): ModuleList(
+              (0): ConcatLinear_v2(
+                (_layer): Linear(in_features=18, out_features=64, bias=True)
+                (_hyper_bias): Linear(in_features=1, out_features=64, bias=False)
+              )
+              (1): TimeDependentSwish(
+                (beta): Sequential(
+                  (0): Linear(in_features=1, out_features=64, bias=True)
+                  (1): Softplus(beta=1, threshold=20)
+                  (2): Linear(in_features=64, out_features=64, bias=True)
+                  (3): Softplus(beta=1, threshold=20)
+                )
+              )
+              (2): ConcatLinear_v2(
+                (_layer): Linear(in_features=64, out_features=64, bias=True)
+                (_hyper_bias): Linear(in_features=1, out_features=64, bias=False)
+              )
+              (3): TimeDependentSwish(
+                (beta): Sequential(
+                  (0): Linear(in_features=1, out_features=64, bias=True)
+                  (1): Softplus(beta=1, threshold=20)
+                  (2): Linear(in_features=64, out_features=64, bias=True)
+                  (3): Softplus(beta=1, threshold=20)
+                )
+              )
+              (4): ConcatLinear_v2(
+                (_layer): Linear(in_features=64, out_features=64, bias=True)
+                (_hyper_bias): Linear(in_features=1, out_features=64, bias=False)
+              )
+              (5): TimeDependentSwish(
+                (beta): Sequential(
+                  (0): Linear(in_features=1, out_features=64, bias=True)
+                  (1): Softplus(beta=1, threshold=20)
+                  (2): Linear(in_features=64, out_features=64, bias=True)
+                  (3): Softplus(beta=1, threshold=20)
+                )
+              )
+              (6): ConcatLinear_v2(
+                (_layer): Linear(in_features=64, out_features=2, bias=True)
+                (_hyper_bias): Linear(in_features=1, out_features=2, bias=False)
+              )
+            )
+          )
+        )
+      )
+      (inst_flow): HypernetworkRadialFlow(
+        (radial_flows): ModuleList(
+          (0): RadialFlow()
+          (1): RadialFlow()
+          (2): RadialFlow()
+          (3): RadialFlow()
+        )
+        (hypernet): Sequential(
+          (0): Linear(in_features=19, out_features=128, bias=True)
+          (1): ReLU(inplace=True)
+          (2): Linear(in_features=128, out_features=128, bias=True)
+          (3): ReLU(inplace=True)
+          (4): Linear(in_features=128, out_features=16, bias=True)
+        )
+      )
+    )
+  )
+)
+2022-07-10 20:50:48,438 - Traceback (most recent call last):
+  File "/home/cvmlserver/yujees/neural_stpp/train_stpp-eqjp_JCNF.py", line 167, in main
+    _main(rank, world_size, args, savepath, logger)
+  File "/home/cvmlserver/yujees/neural_stpp/train_stpp-eqjp_JCNF.py", line 433, in _main
+    space_loglik, time_loglik = model(
+  File "/home/cvmlserver/anaconda3/envs/nstpp/lib/python3.8/site-packages/torch/nn/modules/module.py", line 1110, in _call_impl
+    return forward_call(*input, **kwargs)
+  File "/home/cvmlserver/anaconda3/envs/nstpp/lib/python3.8/site-packages/torch/nn/parallel/distributed.py", line 963, in forward
+    output = self.module(*inputs[0], **kwargs[0])
+  File "/home/cvmlserver/anaconda3/envs/nstpp/lib/python3.8/site-packages/torch/nn/modules/module.py", line 1110, in _call_impl
+    return forward_call(*input, **kwargs)
+  File "/home/cvmlserver/yujees/neural_stpp/models/spatiotemporal.py", line 116, in forward
+    space_loglik = self.spatial_model.logprob(
+  File "/home/cvmlserver/yujees/neural_stpp/models/spatial/jumpcnf.py", line 82, in logprob
+    return self._cond_logliks(event_times, spatial_locations, input_mask, aux_state)
+  File "/home/cvmlserver/yujees/neural_stpp/models/spatial/jumpcnf.py", line 171, in _cond_logliks
+    xs, dlogps = self.cnf.integrate(
+  File "/home/cvmlserver/yujees/neural_stpp/models/spatial/cnf.py", line 85, in integrate
+    solution = odeint_adjoint(
+  File "/home/cvmlserver/anaconda3/envs/nstpp/lib/python3.8/site-packages/torchdiffeq/_impl/adjoint.py", line 198, in odeint_adjoint
+    ans = OdeintAdjointMethod.apply(shapes, func, y0, t, rtol, atol, method, options, event_fn, adjoint_rtol, adjoint_atol,
+  File "/home/cvmlserver/anaconda3/envs/nstpp/lib/python3.8/site-packages/torchdiffeq/_impl/adjoint.py", line 25, in forward
+    ans = odeint(func, y0, t, rtol=rtol, atol=atol, method=method, options=options, event_fn=event_fn)
+  File "/home/cvmlserver/anaconda3/envs/nstpp/lib/python3.8/site-packages/torchdiffeq/_impl/odeint.py", line 77, in odeint
+    solution = solver.integrate(t)
+  File "/home/cvmlserver/anaconda3/envs/nstpp/lib/python3.8/site-packages/torchdiffeq/_impl/solvers.py", line 28, in integrate
+    self._before_integrate(t)
+  File "/home/cvmlserver/anaconda3/envs/nstpp/lib/python3.8/site-packages/torchdiffeq/_impl/rk_common.py", line 161, in _before_integrate
+    f0 = self.func(t[0], self.y0)
+  File "/home/cvmlserver/anaconda3/envs/nstpp/lib/python3.8/site-packages/torch/nn/modules/module.py", line 1110, in _call_impl
+    return forward_call(*input, **kwargs)
+  File "/home/cvmlserver/anaconda3/envs/nstpp/lib/python3.8/site-packages/torchdiffeq/_impl/misc.py", line 189, in forward
+    return self.base_func(t, y)
+  File "/home/cvmlserver/anaconda3/envs/nstpp/lib/python3.8/site-packages/torch/nn/modules/module.py", line 1110, in _call_impl
+    return forward_call(*input, **kwargs)
+  File "/home/cvmlserver/anaconda3/envs/nstpp/lib/python3.8/site-packages/torchdiffeq/_impl/misc.py", line 189, in forward
+    return self.base_func(t, y)
+  File "/home/cvmlserver/anaconda3/envs/nstpp/lib/python3.8/site-packages/torch/nn/modules/module.py", line 1110, in _call_impl
+    return forward_call(*input, **kwargs)
+  File "/home/cvmlserver/anaconda3/envs/nstpp/lib/python3.8/site-packages/torchdiffeq/_impl/misc.py", line 138, in forward
+    f = self.base_func(t, _flat_to_shape(y, (), self.shapes))
+  File "/home/cvmlserver/anaconda3/envs/nstpp/lib/python3.8/site-packages/torch/nn/modules/module.py", line 1110, in _call_impl
+    return forward_call(*input, **kwargs)
+  File "/home/cvmlserver/yujees/neural_stpp/models/spatial/cnf.py", line 157, in forward
+    print(dx[dx != torch.zeros_like(dx)].item())
+ValueError: only one element tensors can be converted to Python scalars
+
+2022-07-10 20:50:49,920 - Traceback (most recent call last):
+  File "/home/cvmlserver/yujees/neural_stpp/train_stpp-eqjp_JCNF.py", line 656, in <module>
+    mp.spawn(main, args=(args.ngpus, args, savepath), nprocs=args.ngpus, join=True)
+  File "/home/cvmlserver/anaconda3/envs/nstpp/lib/python3.8/site-packages/torch/multiprocessing/spawn.py", line 240, in spawn
+    return start_processes(fn, args, nprocs, join, daemon, start_method='spawn')
+  File "/home/cvmlserver/anaconda3/envs/nstpp/lib/python3.8/site-packages/torch/multiprocessing/spawn.py", line 198, in start_processes
+    while not context.join():
+  File "/home/cvmlserver/anaconda3/envs/nstpp/lib/python3.8/site-packages/torch/multiprocessing/spawn.py", line 160, in join
+    raise ProcessRaisedException(msg, error_index, failed_process.pid)
+torch.multiprocessing.spawn.ProcessRaisedException: 
+
+-- Process 0 terminated with the following error:
+Traceback (most recent call last):
+  File "/home/cvmlserver/anaconda3/envs/nstpp/lib/python3.8/site-packages/torch/multiprocessing/spawn.py", line 69, in _wrap
+    fn(i, *args)
+  File "/home/cvmlserver/yujees/neural_stpp/train_stpp-eqjp_JCNF.py", line 167, in main
+    _main(rank, world_size, args, savepath, logger)
+  File "/home/cvmlserver/yujees/neural_stpp/train_stpp-eqjp_JCNF.py", line 433, in _main
+    space_loglik, time_loglik = model(
+  File "/home/cvmlserver/anaconda3/envs/nstpp/lib/python3.8/site-packages/torch/nn/modules/module.py", line 1110, in _call_impl
+    return forward_call(*input, **kwargs)
+  File "/home/cvmlserver/anaconda3/envs/nstpp/lib/python3.8/site-packages/torch/nn/parallel/distributed.py", line 963, in forward
+    output = self.module(*inputs[0], **kwargs[0])
+  File "/home/cvmlserver/anaconda3/envs/nstpp/lib/python3.8/site-packages/torch/nn/modules/module.py", line 1110, in _call_impl
+    return forward_call(*input, **kwargs)
+  File "/home/cvmlserver/yujees/neural_stpp/models/spatiotemporal.py", line 116, in forward
+    space_loglik = self.spatial_model.logprob(
+  File "/home/cvmlserver/yujees/neural_stpp/models/spatial/jumpcnf.py", line 82, in logprob
+    return self._cond_logliks(event_times, spatial_locations, input_mask, aux_state)
+  File "/home/cvmlserver/yujees/neural_stpp/models/spatial/jumpcnf.py", line 171, in _cond_logliks
+    xs, dlogps = self.cnf.integrate(
+  File "/home/cvmlserver/yujees/neural_stpp/models/spatial/cnf.py", line 85, in integrate
+    solution = odeint_adjoint(
+  File "/home/cvmlserver/anaconda3/envs/nstpp/lib/python3.8/site-packages/torchdiffeq/_impl/adjoint.py", line 198, in odeint_adjoint
+    ans = OdeintAdjointMethod.apply(shapes, func, y0, t, rtol, atol, method, options, event_fn, adjoint_rtol, adjoint_atol,
+  File "/home/cvmlserver/anaconda3/envs/nstpp/lib/python3.8/site-packages/torchdiffeq/_impl/adjoint.py", line 25, in forward
+    ans = odeint(func, y0, t, rtol=rtol, atol=atol, method=method, options=options, event_fn=event_fn)
+  File "/home/cvmlserver/anaconda3/envs/nstpp/lib/python3.8/site-packages/torchdiffeq/_impl/odeint.py", line 77, in odeint
+    solution = solver.integrate(t)
+  File "/home/cvmlserver/anaconda3/envs/nstpp/lib/python3.8/site-packages/torchdiffeq/_impl/solvers.py", line 28, in integrate
+    self._before_integrate(t)
+  File "/home/cvmlserver/anaconda3/envs/nstpp/lib/python3.8/site-packages/torchdiffeq/_impl/rk_common.py", line 161, in _before_integrate
+    f0 = self.func(t[0], self.y0)
+  File "/home/cvmlserver/anaconda3/envs/nstpp/lib/python3.8/site-packages/torch/nn/modules/module.py", line 1110, in _call_impl
+    return forward_call(*input, **kwargs)
+  File "/home/cvmlserver/anaconda3/envs/nstpp/lib/python3.8/site-packages/torchdiffeq/_impl/misc.py", line 189, in forward
+    return self.base_func(t, y)
+  File "/home/cvmlserver/anaconda3/envs/nstpp/lib/python3.8/site-packages/torch/nn/modules/module.py", line 1110, in _call_impl
+    return forward_call(*input, **kwargs)
+  File "/home/cvmlserver/anaconda3/envs/nstpp/lib/python3.8/site-packages/torchdiffeq/_impl/misc.py", line 189, in forward
+    return self.base_func(t, y)
+  File "/home/cvmlserver/anaconda3/envs/nstpp/lib/python3.8/site-packages/torch/nn/modules/module.py", line 1110, in _call_impl
+    return forward_call(*input, **kwargs)
+  File "/home/cvmlserver/anaconda3/envs/nstpp/lib/python3.8/site-packages/torchdiffeq/_impl/misc.py", line 138, in forward
+    f = self.base_func(t, _flat_to_shape(y, (), self.shapes))
+  File "/home/cvmlserver/anaconda3/envs/nstpp/lib/python3.8/site-packages/torch/nn/modules/module.py", line 1110, in _call_impl
+    return forward_call(*input, **kwargs)
+  File "/home/cvmlserver/yujees/neural_stpp/models/spatial/cnf.py", line 157, in forward
+    print(dx[dx != torch.zeros_like(dx)].item())
+ValueError: only one element tensors can be converted to Python scalars
+
+

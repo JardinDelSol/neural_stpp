@@ -24,6 +24,7 @@ class IntensityODEFunc(nn.Module):
 
     def get_intensity(self, tpp_state):
         return torch.sigmoid(self.intensity_fn(tpp_state[..., : self.hdim]) - 2.0) * 50
+        # Q where did -2.0 and 50 come from
 
 
 class SplitHiddenStateODEFunc(nn.Module):
@@ -112,7 +113,7 @@ class HiddenStateODEFuncList(nn.Module):
         )  # Q split? : b/c mutlipe dim separately update
         upds = []
         for s, func in zip(states, self.odefuncs):
-            upds.append(func.update_state(t, s, cond))
+            upds.append(func.update_state(t, s, cond))  # conditioned on all N events
         return torch.cat(upds, dim=-1)
 
 
@@ -208,7 +209,7 @@ class NeuralPointProcess(TemporalPointProcess):
             spatial_location: (N, T, D)
             input_mask: (N, T)
             t0: (N,) or (1,)
-            t1: (N,) or (1,)
+            t1: (N,) or (1,) # what is t1
         """
         N, T = event_times.shape
 
@@ -224,7 +225,7 @@ class NeuralPointProcess(TemporalPointProcess):
         init_state = self._init_state[None].expand(N, -1)
         state = (
             torch.zeros(N).to(init_state),  # Lambda(t_0)
-            init_state,
+            init_state,  # h_t
         )
 
         t0 = t0 if torch.is_tensor(t0) else torch.tensor(t0)
@@ -243,10 +244,10 @@ class NeuralPointProcess(TemporalPointProcess):
                 state,
                 nlinspace=nlinspace,
                 method="dopri5" if self.training else "dopri5",
-            )
+            )  # retrun reg, xs
 
             hiddens = state_traj[1]  # (1 + nlinspace, N, D)
-            if i > 0:
+            if i > 0:  # Q: why not at 0
                 hiddens = hiddens[1:]
             # set hidden states to zero if input is masked out at the next time step.
             hiddens = torch.where(
@@ -254,7 +255,7 @@ class NeuralPointProcess(TemporalPointProcess):
                 hiddens,
                 torch.zeros_like(hiddens),
             )
-            prejump_hidden_states.append(hiddens)
+            prejump_hidden_states.append(hiddens)  # h'_t
 
             state = tuple(s[-1] for s in state_traj)
             Lambda, tpp_state = state
@@ -270,7 +271,7 @@ class NeuralPointProcess(TemporalPointProcess):
                     updated_tpp_state,
                     tpp_state,
                 )
-                state = (Lambda, tpp_state)
+                state = (Lambda, tpp_state)  # Lambda  is actually \int \lambda
 
             # Track t0 as the last valid event time.
             t0 = torch.where(input_mask[:, i], event_times[:, i], t0)
@@ -393,10 +394,10 @@ class TimeVariableODE(nn.Module):
         self.nfe = 0
 
     def integrate(self, t0, t1, x0, nlinspace=1, method=None):
-        assert nlinspace > 0
+        assert nlinspace > 0  # Q what is linspace
         method = method or self.method
 
-        solution = odeint(
+        solution = odeint(  # odeint_adjoint
             self,  # self as a function
             (t0, t1, torch.zeros(1).to(x0[0]), *x0),
             torch.linspace(self.start_time, self.end_time, nlinspace + 1).to(t0),
@@ -404,9 +405,9 @@ class TimeVariableODE(nn.Module):
             atol=self.atol,
             method=method,
         )
-        _, _, energy, *xs = solution
+        _, _, energy, *xs = solution  # xs[0][0] == x0[0]
         reg = energy * self.energy_regularization
-        return WrapRegularization.apply(reg, *xs)
+        return WrapRegularization.apply(reg, *xs)  # Q: 1 for reg
 
     def forward(self, s, state):
         """Solves the same dynamics but uses a dummy variable that always integrates [0, 1]."""
@@ -418,10 +419,10 @@ class TimeVariableODE(nn.Module):
 
         with torch.enable_grad():
             x = tuple(x_.requires_grad_(True) for x_ in x)
-            dx = self.func(t, x)
+            dx = self.func(t, x)  # IntensityODEFunc(tvcnf)
             dx = tuple(dx_ * ratio.reshape(-1, *([1] * (dx_.ndim - 1))) for dx_ in dx)
-
-            d_energy = sum(torch.sum(dx_ * dx_) for dx_ in dx) / sum(
+            # Q
+            d_energy = sum(torch.sum(dx_ * dx_) for dx_ in dx) / sum(  # Q
                 x_.numel() for x_ in x
             )
 
